@@ -1,0 +1,88 @@
+{
+    "devices": [
+        {
+            "name": "living-aircon",
+            "description": "リビングのエアコン",
+            "object": {
+                "name": "",
+                "uuid": "",
+                "position":{
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            "api": {
+                "endpoint": "http://192.168.10.100/api/v1",
+                "operations":[
+                    {
+                        "name": "power_on",
+                        "path": "/power/on",
+                        "description": "エアコンの電源をONにする"
+                    },
+                    {
+                        "name": "power_off",
+                        "path": "/power/off",
+                        "description": "エアコンの電源をOFFにする"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "living-light-corridor",
+            "description": "リビングの照明(廊下側)",
+            "object": {
+                "name": "",
+                "uuid": "",
+                "position":{
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            "api": {
+                "endpoint": "http://192.168.10.200/api/v1",
+                "operations":[
+                    {
+                        "name": "light_on",
+                        "path": "/light/1/on",
+                        "description": "照明の電源をONにする"
+                    },
+                    {
+                        "name": "light_off",
+                        "path": "/light/1/off",
+                        "description": "照明の電源をOFFにする"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "living-light-garden",
+            "description": "リビングの照明(庭側)",
+            "object": {
+                "name": "",
+                "uuid": "",
+                "position":{
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            "api": {
+                "endpoint": "http://192.168.10.200/api/v1",
+                "operations":[
+                    {
+                        "name": "light_on",
+                        "path": "/light/2/on",
+                        "description": "照明の電源をONにする"
+                    },
+                    {
+                        "name": "light_off",
+                        "path": "/light/2/off",
+                        "description": "照明の電源をOFFにする"
+                    }
+                ]
+            }
+        }
+    ]
+}
