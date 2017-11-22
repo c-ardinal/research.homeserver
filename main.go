@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -15,14 +17,14 @@ import (
 var LocalJSON *jason.Object
 var Devices map[string]*jason.Object = map[string]*jason.Object{}
 
-// デバイス一覧
+// 機器一覧
 func getDevices(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	format, _ := LocalJSON.Object()
 	formated, _ := json.MarshalIndent(format, "", "\t")
 	fmt.Fprintf(w, "%s", formated)
 }
 
-// デバイス情報取得
+// 機器情報取得
 func getDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	devices, _ := LocalJSON.GetObjectArray("devices")
 	for _, device := range devices {
@@ -36,18 +38,22 @@ func getDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Fprintf(w, "{\"error\": \"NotFound\"}")
 }
 
+// 機器の追加
 func addDevice(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "WIP")
 }
 
+// 機器の修正
 func fixDevice(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "WIP")
 }
 
+// 機器の削除
 func deleteDevice(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "WIP")
 }
 
+// 機器の制御
 func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	j, err := jason.NewObjectFromReader(r.Body)
 	if err != nil {
@@ -90,29 +96,43 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "{\"Accept\": \"%s\"", jo)
 }
 
+// 機器の自動スキャン
 func doScan(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "WIP")
 }
 
-func sendRequest(url string, method string, body string) {
-	var req *http.Request
+// リクエスト送信
+func sendRequest(url string, method string, body string) string {
+	var reader io.Reader
 
-	fmt.Println()
 	if body == "" {
-		req, _ = http.NewRequest(method, url, strings.NewReader(body))
+		reader = strings.NewReader(body)
 	} else {
-		req, _ = http.NewRequest(method, url, nil)
+		reader = nil
+	}
+
+	req, err := http.NewRequest(method, url, reader)
+	if err != nil {
+		return "{\"failed\": \"" + err.Error() + "\"}"
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		return "{\"failed\": \"" + err.Error() + "\"}"
 	}
 	defer resp.Body.Close()
+
+	// 文字列への変換
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(resp.Body)
+	newStr := buf.String()
+
+	return newStr
 }
 
+// サーバ初期化
 func initServer() {
 	LocalJSON, _ = jason.NewObjectFromReader(os.Stdin)
 	devices, _ := LocalJSON.GetObjectArray("devices")
@@ -139,6 +159,7 @@ func initServer() {
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
+// メイン
 func main() {
 	initServer()
 }
