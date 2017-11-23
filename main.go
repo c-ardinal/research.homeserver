@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -19,6 +20,7 @@ var Devices map[string]*jason.Object = map[string]*jason.Object{}
 
 // 機器一覧
 func getDevices(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	log.Println("GET /devices")
 	format, _ := LocalJSON.Object()
 	formated, _ := json.MarshalIndent(format, "", "\t")
 	fmt.Fprintf(w, "%s", formated)
@@ -26,6 +28,7 @@ func getDevices(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 // 機器情報取得
 func getDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	log.Println("GET /device/" + p.ByName("name"))
 	devices, _ := LocalJSON.GetObjectArray("devices")
 	for _, device := range devices {
 		deviceName, _ := device.GetString("name")
@@ -39,22 +42,31 @@ func getDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 }
 
 // 機器の追加
-func addDevice(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func addDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	log.Println("POST /device/" + p.ByName("name"))
 	fmt.Fprintf(w, "WIP")
 }
 
 // 機器の修正
-func fixDevice(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func fixDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	log.Println("PUT /device/" + p.ByName("name"))
 	fmt.Fprintf(w, "WIP")
 }
 
 // 機器の削除
-func deleteDevice(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprintf(w, "WIP")
+func deleteDevice(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	log.Println("DELETE /device/" + p.ByName("name"))
+	err := Devices[p.ByName("name")].Null()
+	if err != nil {
+		fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
+		return
+	}
+	fmt.Fprintf(w, "{\"Accept\": \"%s\"}", LocalJSON)
 }
 
 // 機器の制御
 func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	log.Println("POST /control")
 	j, err := jason.NewObjectFromReader(r.Body)
 	if err != nil {
 		fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
@@ -65,7 +77,7 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
 		return
 	}
-	fmt.Println(jo)
+	log.Println("Request body: " + jo.String())
 
 	requests, _ := j.GetObjectArray("operations")
 	for _, request := range requests {
@@ -88,7 +100,7 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 				path, _ := op.GetString("path")
 				endpoint, _ := api.GetString("endpoint")
 				url := endpoint + path
-				fmt.Println("SendRequest: " + url)
+				log.Println("SendRequest: " + url)
 				//sendRequest(url, "POST", "")
 			}
 		}
@@ -98,6 +110,7 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 // 機器の自動スキャン
 func doScan(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	log.Println("POST /scan")
 	fmt.Fprintf(w, "WIP")
 }
 
@@ -132,34 +145,60 @@ func sendRequest(url string, method string, body string) string {
 	return newStr
 }
 
-// サーバ初期化
-func initServer() {
-	LocalJSON, _ = jason.NewObjectFromReader(os.Stdin)
-	devices, _ := LocalJSON.GetObjectArray("devices")
+// JSONの読み込み
+func loadJSON() {
+	if len(os.Args) == 1 {
+		log.Println("Error: File has not been specified.")
+		log.Println("Please execute \"" + os.Args[0] + " {device_data}.json\"")
+		os.Exit(1)
+	}
+
+	raw, err := ioutil.ReadFile(os.Args[1])
+	if err != nil {
+		log.Println("Error: " + err.Error())
+		os.Exit(1)
+	}
+
+	LocalJSON, err = jason.NewObjectFromBytes(raw)
+	if err != nil {
+		log.Println("Error: " + err.Error())
+		os.Exit(1)
+	}
+
+	devices, err := LocalJSON.GetObjectArray("devices")
+	if err != nil {
+		log.Println("Error: " + err.Error())
+		os.Exit(1)
+	}
+
 	for _, device := range devices {
 		deviceName, _ := device.GetString("name")
 		Devices[deviceName] = device
 	}
-	fmt.Println(LocalJSON.GetObject())
+	log.Println("Load from \"" + os.Args[1] + "\"")
+}
 
+// サーバ初期化
+func initServer() {
 	router := httprouter.New()
+
 	// デバイス一覧
 	router.GET("/devices", getDevices)
-
 	// デバイス情報操作
 	router.GET("/device/:name", getDevice)
 	router.POST("/device/:name", addDevice)
 	router.PUT("/device/:name", fixDevice)
 	router.DELETE("/device/:name", deleteDevice)
-
 	// デバイス操作
 	router.POST("/control", doControl)
 	router.POST("/scan", doScan)
 
+	log.Println("Service start")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 // メイン
 func main() {
+	loadJSON()
 	initServer()
 }
