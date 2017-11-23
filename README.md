@@ -1,13 +1,13 @@
-# 研究用スマートホームブリッジ
+# 研究用簡易スマートホームブリッジ
 
 ## build&run
+Golang version: 1.8.5
 ```
 git clone https://github.com/c-ardinal/research.homeserver
 cd research.homeserver
-go get github.com/antonholmquist/jason
-go get github.com/julienschmidt/httprouter
+go get -d -v
 go build
-./research.homeserver < example.json
+./research.homeserver example.json
 ```
 
 ## REST APIs
