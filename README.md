@@ -39,7 +39,8 @@ go build
  ```
 
 ## Recommended Tools
- - GUI
-  - [Restlet Client](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm "Restlet Client")
- - CUI
-  - [httpie](https://github.com/jakubroztocil/httpie/ "jakubroztocil/httpie")
+### GUI
+ - [Restlet Client](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm "Restlet Client")
+
+### CUI
+ - [httpie](https://github.com/jakubroztocil/httpie/ "jakubroztocil/httpie")
