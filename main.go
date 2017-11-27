@@ -100,8 +100,9 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 				path, _ := op.GetString("path")
 				endpoint, _ := api.GetString("endpoint")
 				url := endpoint + path
+				//method, _ := api.GetString("method")
 				log.Println("SendRequest: " + url)
-				//sendRequest(url, "POST", "")
+				//sendRequest(url, method, "")
 			}
 		}
 	}
