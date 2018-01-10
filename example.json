@@ -19,12 +19,14 @@
                         "name": "power_on",
                         "path": "/power/on",
                         "method": "POST",
+                        "body": "",
                         "description": "エアコンの電源をONにする"
                     },
                     {
                         "name": "power_off",
                         "path": "/power/off",
                         "method": "POST",
+                        "body": "",
                         "description": "エアコンの電源をOFFにする"
                     }
                 ]
@@ -49,12 +51,14 @@
                         "name": "light_on",
                         "path": "/light/1/on",
                         "method": "POST",
+                        "body": "",
                         "description": "照明の電源をONにする"
                     },
                     {
                         "name": "light_off",
                         "path": "/light/1/off",
                         "method": "POST",
+                        "body": "",
                         "description": "照明の電源をOFFにする"
                     }
                 ]
@@ -79,12 +83,14 @@
                         "name": "light_on",
                         "path": "/light/2/on",
                         "method": "POST",
+                        "body": "",
                         "description": "照明の電源をONにする"
                     },
                     {
                         "name": "light_off",
                         "path": "/light/2/off",
                         "method": "POST",
+                        "body": "",
                         "description": "照明の電源をOFFにする"
                     }
                 ]

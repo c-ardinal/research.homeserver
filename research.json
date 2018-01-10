@@ -1,0 +1,68 @@
+{
+    "devices": [
+        {
+            "name": "living-light-1",
+            "description": "リビングの照明1",
+            "object": {
+                "name": "",
+                "uuid": "",
+                "position":{
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            "api": {
+                "endpoint": "http://192.168.10.100/api",
+                "operations":[
+                    {
+                        "name": "power_on",
+                        "path": "/1XjLquqRuw7FIdQVLwRg3cJenD2lH8o8SDsdOWOq/lights/1/state",
+                        "method": "PUT",
+                        "body": "{\"on\":true}",
+                        "description": "照明の電源をONにする"
+                    },
+                    {
+                        "name": "power_off",
+                        "path": "/1XjLquqRuw7FIdQVLwRg3cJenD2lH8o8SDsdOWOq/lights/1/state",
+                        "method": "PUT",
+                        "body": "{\"on\":false}",
+                        "description": "照明の電源をOFFにする"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "living-light-2",
+            "description": "リビングの照明2",
+            "object": {
+                "name": "",
+                "uuid": "",
+                "position":{
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            "api": {
+                "endpoint": "http://127.0.0.1:8888",
+                "operations":[
+                    {
+                        "name": "power_on",
+                        "path": "/",
+                        "method": "PUT",
+                        "body": "{\"on\":true}",
+                        "description": "照明の電源をONにする"
+                    },
+                    {
+                        "name": "power_off",
+                        "path": "/",
+                        "method": "PUT",
+                        "body": "{\"on\":false}",
+                        "description": "照明の電源をOFFにする"
+                    }
+                ]
+            }
+        }
+    ]
+}
