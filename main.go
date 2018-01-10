@@ -100,9 +100,11 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 				path, _ := op.GetString("path")
 				endpoint, _ := api.GetString("endpoint")
 				url := endpoint + path
-				//method, _ := api.GetString("method")
-				log.Println("SendRequest: " + url)
-				//sendRequest(url, method, "")
+				method, _ := op.GetString("method")
+				body, _ := op.GetString("body")
+				log.Println("SendRequest: [" + method + "]" + url)
+				log.Println("SendRequest: " + body)
+				sendRequest(url, method, body)
 			}
 		}
 	}
@@ -119,7 +121,7 @@ func doScan(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func sendRequest(url string, method string, body string) string {
 	var reader io.Reader
 
-	if body == "" {
+	if body != "" {
 		reader = strings.NewReader(body)
 	} else {
 		reader = nil
