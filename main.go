@@ -112,7 +112,7 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 							return
 						}
 						if paramType == "body" {
-							valname, err := p.GetString("name")
+							valName, err := p.GetString("name")
 							if err != nil {
 								fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
 								return
@@ -129,11 +129,12 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 							}
 							switch valType {
 							case "num":
-								body = strings.Replace(body, "\"$"+valname+"\"", val, 1)
+								body = strings.Replace(body, "$"+valName, val, 1)
 							default:
-								body = strings.Replace(body, "$"+valname, val, 1)
+								body = strings.Replace(body, "$"+valName, val, 1)
 							}
 						}
+						log.Println("Params update: " + body)
 					}
 				}
 
