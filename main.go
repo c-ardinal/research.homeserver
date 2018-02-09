@@ -91,6 +91,7 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
 			return
 		}
+		params, _ := request.GetObjectArray("params")
 
 		api, _ := Devices[target].GetObject("api")
 		ops, _ := api.GetObjectArray("operations")
@@ -102,6 +103,41 @@ func doControl(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 				url := endpoint + path
 				method, _ := op.GetString("method")
 				body, _ := op.GetString("body")
+
+				if params != nil {
+					for _, p := range params {
+						paramType, err := p.GetString("param-type")
+						if err != nil {
+							fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
+							return
+						}
+						if paramType == "body" {
+							valName, err := p.GetString("name")
+							if err != nil {
+								fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
+								return
+							}
+							val, err := p.GetString("value")
+							if err != nil {
+								fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
+								return
+							}
+							valType, err := p.GetString("value-type")
+							if err != nil {
+								fmt.Fprintf(w, "{\"Faild\": \"%s\"", err.Error())
+								return
+							}
+							switch valType {
+							case "num":
+								body = strings.Replace(body, "$"+valName, val, 1)
+							default:
+								body = strings.Replace(body, "$"+valName, val, 1)
+							}
+						}
+						log.Println("Params update: " + body)
+					}
+				}
+
 				log.Println("SendRequest: [" + method + "]" + url)
 				log.Println("SendRequest: " + body)
 				sendRequest(url, method, body)

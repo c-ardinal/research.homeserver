@@ -28,6 +28,13 @@
                         "method": "PUT",
                         "body": "{\"on\":false}",
                         "description": "照明の電源をOFFにする"
+                    },
+                    {
+                        "name": "change_brightness",
+                        "path": "/1XjLquqRuw7FIdQVLwRg3cJenD2lH8o8SDsdOWOq/lights/1/state",
+                        "method": "PUT",
+                        "body": "{\"bri\":$brightness}",
+                        "description": "照明の明るさを変更する"
                     }
                 ]
             }
@@ -60,6 +67,13 @@
                         "method": "PUT",
                         "body": "{\"on\":false}",
                         "description": "照明の電源をOFFにする"
+                    },
+                    {
+                        "name": "change_brightness",
+                        "path": "/1XjLquqRuw7FIdQVLwRg3cJenD2lH8o8SDsdOWOq/lights/3/state",
+                        "method": "PUT",
+                        "body": "{\"bri\":$brightness}",
+                        "description": "照明の明るさを変更する"
                     }
                 ]
             }
