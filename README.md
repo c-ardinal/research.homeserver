@@ -22,21 +22,42 @@ go build
 |  | POST |/scan               |機器の自動スキャン|http://localhost:8080/scan|
 
 ## Example request body
- - POST /control
- ```json
- {
-     "operations": [
-         {
-             "target": "living-aircon",
-             "operation": "power_on"
-         },
-         {
-             "target": "living-light-garden",
-             "operation": "light_off"
-         }
-     ]
- }
- ```
+ - POST /control [turn on/turn off]
+```json
+{
+    "operations": [
+        {
+            "target": "living-light-tvside",
+            "operation": "power_on"
+        },
+        {      
+            "target": "living-light-windowside",
+            "operation": "power_off"
+        }
+    ]
+}
+```
+
+- POST /control [Change brightness]
+```json
+{
+    "operations": [
+        {
+            "target": "living-light-tvside",
+            "operation": "change_brightness",
+            "params": [
+                {
+                    "param-type": "body",
+                    "name": "brightness",
+                    "value-type": "num",
+                    "value": "100"
+                }
+            ]
+        }
+    ]
+}
+```
+
 
 ## Recommended Tools
 ### GUI
